@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../services/api.service';
+import {Observable} from 'rxjs';
+import {Months} from '../../interfaces/angle';
 
 @Component({
   selector: 'app-location-details',
@@ -8,10 +11,14 @@ import { Component, OnInit } from '@angular/core';
 export class LocationDetailsPage implements OnInit {
 
   currentSegment = 'statistics';
+  angles$: Observable<Months>;
 
-  constructor() { }
+  constructor(
+    private api: ApiService
+  ) { }
 
   ngOnInit() {
+    this.angles$ = this.api.getAngles('64.2008', '149.4937');
   }
 
   segmentChanged(event) {
