@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { PreventRootUrlGuard } from './guards/prevent-root-url.guard';
+import { PreventNoParamGuard } from './guards/location-details/prevent-no-param.guard';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    path: 'search',
+    loadChildren: () => import('./pages/search/search.module').then( m => m.SearchPageModule)
   },
   {
     path: '',
@@ -12,17 +14,10 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'location-details',
-    loadChildren: () => import('./pages/location-details/location-details.module').then( m => m.LocationDetailsPageModule)
-  },
-  {
-    path: 'search',
-    loadChildren: () => import('./pages/search/search.module').then( m => m.SearchPageModule)
-  },
-  {
-    path: 'locations',
-    loadChildren: () => import('./pages/locations/locations.module').then( m => m.LocationsPageModule)
-  },
+    path: 'location-details/:coordinates',
+    loadChildren: () => import('./pages/location-details/location-details.module').then( m => m.LocationDetailsPageModule),
+    canActivate: [PreventRootUrlGuard, PreventNoParamGuard]
+  }
 ];
 
 @NgModule({
