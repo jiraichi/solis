@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LocationDetailsPage implements OnInit {
 
+  currentSegment = 'statistics';
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  segmentChanged(event) {
+    console.log('segment changed ', event);
   }
 
 }
