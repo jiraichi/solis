@@ -12,6 +12,7 @@ export interface Months {
   OCT: Angle;
   NOV: Angle;
   DEC: Angle;
+  ANN: Angle;
 }
 
 export interface Angle {
