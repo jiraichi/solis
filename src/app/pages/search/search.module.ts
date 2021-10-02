@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { SearchPageRoutingModule } from './search-routing.module';
 
 import { SearchPage } from './search.page';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { SearchPage } from './search.page';
     IonicModule,
     SearchPageRoutingModule
   ],
-  declarations: [SearchPage]
+  declarations: [SearchPage],
+  providers: [Geolocation]
 })
 export class SearchPageModule {}

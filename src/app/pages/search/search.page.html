@@ -1,9 +1,33 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>search</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+  <ion-grid>
+    <ion-row class="ion-margin">
+      <ion-col size="6" offset="3">
+        <ion-header>
+          <ion-img class="" src="../../../../assets/logo.svg"></ion-img>
+        </ion-header>
+      </ion-col>
+    </ion-row>
+    <ion-row classs="ion-margin-top">
+      <ion-col>
+        <ion-searchbar debounce="300" (ionChange)="search()" [(ngModel)]="searchTerm"></ion-searchbar>
+        <div style="position: absolute; width: 100%; z-index: 999;">
+          <ion-list lines="none">
+            <ion-item *ngFor="let address of addresses" button (click)="onSelectPlace(address)">
+             <ion-icon size="small" class="ion-padding-end" name="location-outline"></ion-icon>
+              {{ address.placeName }}
+            </ion-item>
+          </ion-list>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="button-container">
+      <ion-col>
+        <ion-button color="secondary" (click)="onFindNearbyLocations()">Find Nearby Locations
+          <ion-icon class="ion-padding-start" color="light" name="navigate"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 
 </ion-content>
