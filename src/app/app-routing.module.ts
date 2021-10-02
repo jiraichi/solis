@@ -14,6 +14,11 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'locations',
+    loadChildren: () => import('./pages/locations/locations.module').then( m => m.LocationsPageModule),
+    canActivate: [PreventRootUrlGuard]
+  },
+  {
     path: 'location-details/:coordinates',
     loadChildren: () => import('./pages/location-details/location-details.module').then( m => m.LocationDetailsPageModule),
     canActivate: [PreventRootUrlGuard, PreventNoParamGuard]
