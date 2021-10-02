@@ -1,9 +1,35 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>location-details</ion-title>
+    <ion-title>Details</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button [text]="'Search'" defaultHref="/search"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense" class="ion-no-border">
+    <ion-toolbar>
+      <ion-title size="large">Details</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-segment [(ngModel)]="currentSegment" (ionChange)="segmentChanged($event)">
+          <ion-segment-button value="statistics">
+            <ion-label>Statistics</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="angles">
+            <ion-label>Angles</ion-label>
+          </ion-segment-button>
+        </ion-segment>
 
+        <ng-container *ngIf="currentSegment === 'statistics'">
+        </ng-container>
+        <ng-container *ngIf="currentSegment === 'angles'">
+        </ng-container>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
