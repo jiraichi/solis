@@ -202,11 +202,6 @@ getAngles() {
       if (this.angleXAverage && this.angleYAverage) {
         this.disableInteractiveButton = false;
       }
-
-
-      // CHART STUFF
-
-
     })
   );
 }
