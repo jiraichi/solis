@@ -65,18 +65,18 @@ export class SearchPage implements OnInit {
       spinner: 'circles',
       message: 'Finding location...'
     });
-    loader.present();
+    await loader.present();
   }
 
-  onCurrentLocation() {
-    this.presentLoader();
-    this.geolocation.getCurrentPosition().then((resp) => {
+  async onCurrentLocation() {
+    await this.presentLoader();
+    this.geolocation.getCurrentPosition().then(async (resp) => {
       this.userLocation = {
         lat: resp.coords.latitude,
         lng: resp.coords.longitude
       };
-      this.loadingCtrl.dismiss();
-      this.navCtrl.navigateForward(`/location-details/${this.userLocation.lat}_${this.userLocation.lng}`);
+      await this.loadingCtrl.dismiss();
+      await this.navCtrl.navigateForward(`/location-details/${this.userLocation.lat}_${this.userLocation.lng}`);
     }).catch((error) => {
       console.log('Error getting location', error);
     });

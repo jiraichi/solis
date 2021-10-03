@@ -89,15 +89,12 @@ export class LocationDetailsPage implements OnInit {
     });
     this.average$ = this.api.getAverage(this.lat, this.long, '2016', '2020').pipe(
       tap(average => {
-        console.log(average.total_average);
-        if (average.total_average > -30) {
-          this.averageStatus = 'Not recomended';
-        }
-        else if (average.total_average < -30) {
+        console.log('total average ', average.total_average);
+        if (average.total_average < -30) {
           this.averageStatus = 'Bad';
         }
         else if (average.total_average < 30 && average.total_average > -30) {
-          this.averageStatus = 'Normal';
+          this.averageStatus = 'Average';
         }
         else if (average.total_average > 30) {
           this.averageStatus = 'Good';
