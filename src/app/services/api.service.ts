@@ -30,4 +30,9 @@ export class ApiService {
     return this.http.get(url);
   }
 
+  getAverage(lat: string, lng: string, start: string, end: string) {
+    const url = `${this.apiUrl}/average?latitude=${lat}&longitude=${lng}&start=${start}&end=${end}`;
+    return this.http.get(url);
+  }
+
 }

@@ -11,6 +11,13 @@
   <ion-header collapse="condense" class="ion-no-border">
     <ion-toolbar>
       <ion-title size="large">Details</ion-title>
+      <ion-badge
+          class="ion-margin-end"
+          slot="end"
+          *ngIf="average$ | async"
+          color="{{ averageStatus === 'Bad' ? 'danger' : averageStatus === 'Not recomended' ? 'medium'  : 'success' }}"
+          >{{ averageStatus }}</ion-badge
+        >
     </ion-toolbar>
   </ion-header>
 

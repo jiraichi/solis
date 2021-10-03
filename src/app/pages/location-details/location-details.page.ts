@@ -48,12 +48,12 @@ export class LocationDetailsPage implements OnInit {
   currentSegment = 'statistics';
   skyDataOptions = { year: '2019-2020', time: 'monthly' };
   irradianceYear = '2019-2020';
+  averageStatus: string;
   lat: string;
   long: string;
 
   angles$: Observable<Months>;
   orientation: DeviceOrientationCompassHeading;
-
   disableInteractiveButton = true;
 
 
@@ -63,13 +63,14 @@ export class LocationDetailsPage implements OnInit {
 
   skyCondition$: Observable<any>;
   solarIrradiance$: Observable<any>;
+  average$: Observable<any>;
 
   constructor(
     private api: ApiService,
     private route: ActivatedRoute,
     private deviceOrientation: DeviceOrientation,
     private navCtrl: NavController
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -86,12 +87,30 @@ export class LocationDetailsPage implements OnInit {
     this.angles$.subscribe(res => {
 
     });
+    this.average$ = this.api.getAverage(this.lat, this.long, '2016', '2020').pipe(
+      tap(average => {
+        console.log(average.total_average);
+        if (average.total_average > -30) {
+          this.averageStatus = 'Not recomended';
+        }
+        else if (average.total_average < -30) {
+          this.averageStatus = 'Bad';
+        }
+        else if (average.total_average < 30 && average.total_average > -30) {
+          this.averageStatus = 'Normal';
+        }
+        else if (average.total_average > 30) {
+          this.averageStatus = 'Good';
+        }
+      }));
+
 
 
   }
 
   goToInteractiveMode() {
-    this.navCtrl.navigateForward(`/location-details/${this.lat}-${this.long}/angle/${this.lat}_${this.long}/${this.angleXAverage}_${this.angleYAverage}`);
+    this.navCtrl.navigateForward
+    (`/location-details/${this.lat}-${this.long}/angle/${this.lat}_${this.long}/${this.angleXAverage}_${this.angleYAverage}`);
   }
 
   skyConditions(start: string, end: string, time: string) {
@@ -161,49 +180,49 @@ export class LocationDetailsPage implements OnInit {
     }
   }
 
-getAngles() {
-  this.angles$ = this.api.getAngles(this.lat, this.long).pipe(
-    tap(res => {
-      /*
-      * Calculates the average angle that is passed to 3d model view
-      * x is an average of horizontal angles from 12 months
-      * y is an average of horizontal angles from 12 months
-      */
-      let x = 0;
-      let y = 0;
-      const vertical = [];
-      const horizontal = [];
+  getAngles() {
+    this.angles$ = this.api.getAngles(this.lat, this.long).pipe(
+      tap(res => {
+        /*
+        * Calculates the average angle that is passed to 3d model view
+        * x is an average of horizontal angles from 12 months
+        * y is an average of horizontal angles from 12 months
+        */
+        let x = 0;
+        let y = 0;
+        const vertical = [];
+        const horizontal = [];
 
-      Object.entries(res).forEach(([key, val]) => {
-        if (key !== 'ANN') {
-          x += val.horizontal / 12;
-          y += val.vertical / 12;
-          if (!this.dunkinDonutsChartLabels.includes(key)) {
-            this.dunkinDonutsChartLabels.push(key);
-          }
-          vertical.push(val.vertical);
-          horizontal.push(val.horizontal);
-          this.dunkinDonutsChartData = [
-            {
-              data: vertical,
-              label: 'Vertical'
-            },
-            {
-              data: horizontal,
-              label: 'Horizontal'
+        Object.entries(res).forEach(([key, val]) => {
+          if (key !== 'ANN') {
+            x += val.horizontal / 12;
+            y += val.vertical / 12;
+            if (!this.dunkinDonutsChartLabels.includes(key)) {
+              this.dunkinDonutsChartLabels.push(key);
             }
-          ];
+            vertical.push(val.vertical);
+            horizontal.push(val.horizontal);
+            this.dunkinDonutsChartData = [
+              {
+                data: vertical,
+                label: 'Vertical'
+              },
+              {
+                data: horizontal,
+                label: 'Horizontal'
+              }
+            ];
+          }
+        });
+
+        this.angleXAverage = Math.round(x / 18);
+        this.angleYAverage = Math.round(y / 18);
+
+        if (this.angleXAverage && this.angleYAverage) {
+          this.disableInteractiveButton = false;
         }
-      });
-
-      this.angleXAverage = Math.round(x / 18);
-      this.angleYAverage = Math.round(y / 18);
-
-      if (this.angleXAverage && this.angleYAverage) {
-        this.disableInteractiveButton = false;
-      }
-    })
-  );
-}
+      })
+    );
+  }
 
 }
