@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: LocationDetailsPage
+  },
+  {
+    path: 'angle/:coordinates/:sunPosition',
+    loadChildren: () => import('./angle/angle.module').then( m => m.AnglePageModule)
   }
 ];
 

@@ -1,8 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { Observable } from 'rxjs';
 import { Months } from '../../interfaces/angle';
 import { ActivatedRoute } from '@angular/router';
+import { DeviceOrientation, DeviceOrientationCompassHeading } from '@ionic-native/device-orientation/ngx';
+import { NavController } from '@ionic/angular';
 import { map, tap } from 'rxjs/operators';
 
 
@@ -41,13 +43,24 @@ export class LocationDetailsPage implements OnInit {
   long: string;
 
   angles$: Observable<Months>;
+  orientation: DeviceOrientationCompassHeading;
+
+  disableInteractiveButton = true;
+
+
+  angleXAverage: number;
+  angleYAverage: number;
+
+
   skyCondition$: Observable<any>;
   solarIrradiance$: Observable<any>;
 
   constructor(
     private api: ApiService,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private deviceOrientation: DeviceOrientation,
+    private navCtrl: NavController
+  ) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -58,6 +71,36 @@ export class LocationDetailsPage implements OnInit {
     this.angles$ = this.api.getAngles(this.lat, this.long);
     this.onChangeTime();
     this.solarIrradiance();
+    this.angles$.subscribe(res => console.log(res));
+
+    this.deviceOrientation.watchHeading().subscribe((res: DeviceOrientationCompassHeading) => {
+      this.orientation = res;
+    });
+
+    this.angles$.subscribe(res => {
+      let x = 0;
+      let y = 0;
+      Object.entries(res).forEach(([key, val]) => {
+        if (key !== 'ANN') {
+          x += val.horizontal / 12;
+          y += val.vertical / 12;
+        }
+      });
+
+      this.angleXAverage = Math.round(x / 18);
+      this.angleYAverage = Math.round(y / 18);
+      console.log(this.angleXAverage);
+      console.log(this.angleYAverage);
+      if (this.angleXAverage && this.angleYAverage) {
+        this.disableInteractiveButton = false;
+      }
+    });
+
+
+  }
+
+  goToInteractiveMode() {
+    this.navCtrl.navigateForward(`/location-details/${this.lat}-${this.long}/angle/${this.lat}-${this.long}/${this.angleXAverage}-${this.angleYAverage}`);
   }
 
   skyConditions(start: string, end: string, time: string) {
@@ -131,4 +174,5 @@ export class LocationDetailsPage implements OnInit {
   segmentChanged(event) {
     console.log('segment changed ', event);
   }
+
 }

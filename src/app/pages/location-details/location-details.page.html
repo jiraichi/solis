@@ -2,10 +2,7 @@
   <ion-toolbar>
     <ion-title>Details</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button
-        [text]="'Search'"
-        defaultHref="/search"
-      ></ion-back-button>
+      <ion-back-button [text]="'Search'" defaultHref="/search"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -16,13 +13,11 @@
       <ion-title size="large">Details</ion-title>
     </ion-toolbar>
   </ion-header>
+
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-segment
-          [(ngModel)]="currentSegment"
-          (ionChange)="segmentChanged($event)"
-        >
+        <ion-segment [(ngModel)]="currentSegment" (ionChange)="segmentChanged($event)">
           <ion-segment-button value="statistics">
             <ion-label>Statistics</ion-label>
           </ion-segment-button>
@@ -123,8 +118,18 @@
               </ion-col>
             </ion-row>
           </ng-container>
+
         </ng-container>
-        <ng-container *ngIf="currentSegment === 'angles'"> </ng-container>
+        <ng-container *ngIf="currentSegment === 'angles'">
+          <strong>DeviceOrientationCompassHeading</strong>
+          <p>{{orientation | json}}</p>
+          <ion-button [disabled]="disableInteractiveButton" expand="block" (click)="goToInteractiveMode()" color="primary">
+            <ion-label *ngIf="!disableInteractiveButton">
+              3D Mode
+            </ion-label>
+            <ion-spinner *ngIf="disableInteractiveButton"></ion-spinner>
+          </ion-button>
+        </ng-container>
       </ion-col>
     </ion-row>
   </ion-grid>
