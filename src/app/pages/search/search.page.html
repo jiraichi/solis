@@ -1,14 +1,17 @@
 <ion-content>
   <ion-grid>
-    <ion-row class="ion-margin">
-      <ion-col size="6" offset="3">
+    <ion-row style="z-index: 0;">
+      <ion-col class="ion-padding ion-margin logo-col" size="4">
         <ion-header>
-          <ion-img class="" src="../../../../assets/logo.svg"></ion-img>
+          <ion-img src="../../../../assets/logo.svg"></ion-img>
         </ion-header>
       </ion-col>
+      <ion-col class="ion-no-padding">
+        <ion-img class="sun-img" src="../../../../assets/sun.svg"></ion-img>
+      </ion-col>
     </ion-row>
-    <ion-row classs="ion-margin-top">
-      <ion-col>
+    <ion-row style="margin-top: -20%;">
+      <ion-col size="12">
         <ion-searchbar debounce="300" (ionChange)="search()" [(ngModel)]="searchTerm"></ion-searchbar>
         <div style="position: absolute; width: 100%; z-index: 999;">
           <ion-list lines="none">
@@ -22,7 +25,7 @@
     </ion-row>
     <ion-row class="button-container">
       <ion-col>
-        <ion-button color="secondary" (click)="onFindNearbyLocations()">Find Nearby Locations
+        <ion-button color="secondary" (click)="onCurrentLocation()">Current Location
           <ion-icon class="ion-padding-start" color="light" name="navigate"></ion-icon>
         </ion-button>
       </ion-col>

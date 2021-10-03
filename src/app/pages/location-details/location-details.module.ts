@@ -7,14 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { LocationDetailsPageRoutingModule } from './location-details-routing.module';
 
 import { LocationDetailsPage } from './location-details.page';
+import { ChartsModule } from 'ng2-charts';
+
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    LocationDetailsPageRoutingModule
+    LocationDetailsPageRoutingModule,
+    ChartsModule,
   ],
-  declarations: [LocationDetailsPage]
+  declarations: [LocationDetailsPage],
 })
 export class LocationDetailsPageModule {}

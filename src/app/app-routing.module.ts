@@ -14,7 +14,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'location-details',
+    path: 'location-details/:coordinates',
     loadChildren: () => import('./pages/location-details/location-details.module').then( m => m.LocationDetailsPageModule)
   },
   {
