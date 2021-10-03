@@ -57,7 +57,7 @@ export class SearchPage implements OnInit {
 
 
   onSelectPlace(selectedPlace: Place) {
-    this.navCtrl.navigateForward(`/location-details/${selectedPlace.coordinates.lat}-${selectedPlace.coordinates.lng}`);
+    this.navCtrl.navigateForward(`/location-details/${selectedPlace.coordinates.lat}_${selectedPlace.coordinates.lng}`);
   }
 
   async presentLoader() {
@@ -76,7 +76,7 @@ export class SearchPage implements OnInit {
         lng: resp.coords.longitude
       };
       this.loadingCtrl.dismiss();
-      this.navCtrl.navigateForward(`/location-details/${this.userLocation.lat}-${this.userLocation.lng}`);
+      this.navCtrl.navigateForward(`/location-details/${this.userLocation.lat}_${this.userLocation.lng}`);
     }).catch((error) => {
       console.log('Error getting location', error);
     });

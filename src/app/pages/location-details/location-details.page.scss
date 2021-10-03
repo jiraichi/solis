@@ -1,6 +1,12 @@
-ion-spinner{
+ion-spinner {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.chart-remarks {
+  font-size: 0.7em;
+  margin-top: 0;
+  margin-bottom: 0;
 }

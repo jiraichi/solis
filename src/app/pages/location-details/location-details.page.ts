@@ -35,10 +35,19 @@ export class LocationDetailsPage implements OnInit {
     label: string;
   }[] = [];
 
+  dunkinDonutsChartOptions = {
+    responsive: true
+  };
+  dunkinDonutsChartLabels = [];
+  dunkinDonutsChartData: {
+    data: any[];
+    label: string;
+  }[] = [];
+
 
   currentSegment = 'statistics';
   skyDataOptions = { year: '2019-2020', time: 'monthly' };
-  irradienceYear = '2019-2020';
+  irradianceYear = '2019-2020';
   lat: string;
   long: string;
 
@@ -64,43 +73,25 @@ export class LocationDetailsPage implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.lat = params.get('coordinates').split('-')[0];
-      this.long = params.get('coordinates').split('-')[1];
+      this.lat = params.get('coordinates').split('_')[0];
+      this.long = params.get('coordinates').split('_')[1];
     });
 
-    this.angles$ = this.api.getAngles(this.lat, this.long);
     this.onChangeTime();
     this.solarIrradiance();
-    this.angles$.subscribe(res => console.log(res));
+    this.getAngles();
 
-    this.deviceOrientation.watchHeading().subscribe((res: DeviceOrientationCompassHeading) => {
-      this.orientation = res;
-    });
+
 
     this.angles$.subscribe(res => {
-      let x = 0;
-      let y = 0;
-      Object.entries(res).forEach(([key, val]) => {
-        if (key !== 'ANN') {
-          x += val.horizontal / 12;
-          y += val.vertical / 12;
-        }
-      });
 
-      this.angleXAverage = Math.round(x / 18);
-      this.angleYAverage = Math.round(y / 18);
-      console.log(this.angleXAverage);
-      console.log(this.angleYAverage);
-      if (this.angleXAverage && this.angleYAverage) {
-        this.disableInteractiveButton = false;
-      }
     });
 
 
   }
 
   goToInteractiveMode() {
-    this.navCtrl.navigateForward(`/location-details/${this.lat}-${this.long}/angle/${this.lat}-${this.long}/${this.angleXAverage}-${this.angleYAverage}`);
+    this.navCtrl.navigateForward(`/location-details/${this.lat}-${this.long}/angle/${this.lat}_${this.long}/${this.angleXAverage}_${this.angleYAverage}`);
   }
 
   skyConditions(start: string, end: string, time: string) {
@@ -138,20 +129,20 @@ export class LocationDetailsPage implements OnInit {
   }
 
   solarIrradiance() {
-    const start = this.irradienceYear.split('-')[0];
-    const end = this.irradienceYear.split('-')[1];
+    const start = this.irradianceYear.split('-')[0];
+    const end = this.irradianceYear.split('-')[1];
     if (this.lat && this.long) {
       this.solarIrradiance$ = this.api.getSolarIrradience(this.lat, this.long, start, end).pipe(
-        tap(irradience => {
+        tap(irradiance => {
           const vertical = [];
           const horizontal = [];
           this.lineChartLabels = [];
           this.lineChartData = [];
-          for (const key in irradience) {
+          for (const key in irradiance) {
             if (key && key !== 'ANN') {
               this.lineChartLabels.push(key);
-              vertical.push(irradience[key].vertical);
-              horizontal.push(irradience[key].horizontal);
+              vertical.push(irradiance[key].vertical);
+              horizontal.push(irradiance[key].horizontal);
               this.lineChartData = [
                 {
                   data: vertical,
@@ -170,9 +161,54 @@ export class LocationDetailsPage implements OnInit {
     }
   }
 
+getAngles() {
+  this.angles$ = this.api.getAngles(this.lat, this.long).pipe(
+    tap(res => {
+      /*
+      * Calculates the average angle that is passed to 3d model view
+      * x is an average of horizontal angles from 12 months
+      * y is an average of horizontal angles from 12 months
+      */
+      let x = 0;
+      let y = 0;
+      const vertical = [];
+      const horizontal = [];
 
-  segmentChanged(event) {
-    console.log('segment changed ', event);
-  }
+      Object.entries(res).forEach(([key, val]) => {
+        if (key !== 'ANN') {
+          x += val.horizontal / 12;
+          y += val.vertical / 12;
+          if (!this.dunkinDonutsChartLabels.includes(key)) {
+            this.dunkinDonutsChartLabels.push(key);
+          }
+          vertical.push(val.vertical);
+          horizontal.push(val.horizontal);
+          this.dunkinDonutsChartData = [
+            {
+              data: vertical,
+              label: 'Vertical'
+            },
+            {
+              data: horizontal,
+              label: 'Horizontal'
+            }
+          ];
+        }
+      });
+
+      this.angleXAverage = Math.round(x / 18);
+      this.angleYAverage = Math.round(y / 18);
+
+      if (this.angleXAverage && this.angleYAverage) {
+        this.disableInteractiveButton = false;
+      }
+
+
+      // CHART STUFF
+
+
+    })
+  );
+}
 
 }

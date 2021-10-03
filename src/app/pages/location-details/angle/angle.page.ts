@@ -50,11 +50,11 @@ export class AnglePage implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.lat = params.get('coordinates').split('-')[0];
-      this.long = params.get('coordinates').split('-')[1];
+      this.lat = params.get('coordinates').split('_')[0];
+      this.long = params.get('coordinates').split('_')[1];
 
-      this.angleXAverage = +params.get('sunPosition').split('-')[0];
-      this.angleYAverage = +params.get('sunPosition').split('-')[1];
+      this.angleXAverage = +params.get('sunPosition').split('_')[0];
+      this.angleYAverage = +params.get('sunPosition').split('_')[1];
     });
 
     this.angles$ = this.api.getAngles(this.lat, this.long);
@@ -86,10 +86,6 @@ export class AnglePage implements OnInit {
     this.sun.position.set(this.angleXAverage, this.angleYAverage, -3);
     this.scene.add(this.sun);
 
-    console.log(this.sun);
-    console.log(this.scene);
-    console.log(this.three);
-
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
     this.camera.position.set(0, 20, 100);
@@ -98,6 +94,7 @@ export class AnglePage implements OnInit {
 
     this.controls.update();
 
+    // USE FOLLOWIG TO DEBUG ON BROWSER
    /* const dom = this.renderer.domElement;
     dom.addEventListener('mousemove', (e) => {
 
@@ -116,7 +113,6 @@ export class AnglePage implements OnInit {
       this.orientation = res;
       this.camera.lookAt(this.earth.position);
       this.camera.position.x += res.magneticHeading / 18;
-      console.log(this.sun.position);
       this.controls.update();
       this.renderer.render( this.scene, this.camera );
     });

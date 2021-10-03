@@ -17,7 +17,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-segment [(ngModel)]="currentSegment" (ionChange)="segmentChanged($event)">
+        <ion-segment [(ngModel)]="currentSegment">
           <ion-segment-button value="statistics">
             <ion-label>Statistics</ion-label>
           </ion-segment-button>
@@ -64,7 +64,6 @@
             <ion-row class="ion-margin-top ion-margin-bottom">
               <ion-col>
                 <canvas
-                  id="sky"
                   width="400"
                   height="400"
                   baseChart
@@ -88,7 +87,7 @@
               <ion-col size="6">
                 <ion-select
                   interface="popover"
-                  [(ngModel)]="irradienceYear"
+                  [(ngModel)]="irradianceYear"
                   (ionChange)="solarIrradiance()"
                 >
                   <ion-select-option value="2019-2020"
@@ -106,7 +105,6 @@
             <ion-row class="ion-margin-top">
               <ion-col>
                 <canvas
-                  id="sky"
                   width="400"
                   height="400"
                   baseChart
@@ -121,14 +119,53 @@
 
         </ng-container>
         <ng-container *ngIf="currentSegment === 'angles'">
-          <strong>DeviceOrientationCompassHeading</strong>
-          <p>{{orientation | json}}</p>
-          <ion-button [disabled]="disableInteractiveButton" expand="block" (click)="goToInteractiveMode()" color="primary">
-            <ion-label *ngIf="!disableInteractiveButton">
-              3D Mode
-            </ion-label>
-            <ion-spinner *ngIf="disableInteractiveButton"></ion-spinner>
-          </ion-button>
+          <ng-container *ngIf="angles$ | async; else loading">
+            <ion-row>
+              <ion-col>
+                <h6
+                  class="ion-margin-start ion-margin-top"
+                  style="margin-top: 30px"
+                >
+                Average Angles by Month
+                </h6>
+                <ion-text color="medium">
+                  <h6
+                    class="ion-margin-start chart-remarks"
+                  >
+                    Vertical is outer
+                  </h6>
+                </ion-text>
+
+                <ion-text color="medium">
+                  <h6
+                    class="ion-margin-start chart-remarks"
+                  >
+                    Horizontal is inner
+                  </h6>
+                </ion-text>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <canvas
+                  width="400"
+                  height="400"
+                  baseChart
+                  [datasets]="dunkinDonutsChartData"
+                  [labels]="dunkinDonutsChartLabels"
+                  [options]="dunkinDonutsChartOptions"
+                  [chartType]="'doughnut'"
+                ></canvas>
+              </ion-col>
+            </ion-row>
+
+            <ion-button [disabled]="disableInteractiveButton" expand="block" (click)="goToInteractiveMode()" color="primary" class="ion-margin-top">
+              <ion-label *ngIf="!disableInteractiveButton">
+                3D Mode
+              </ion-label>
+              <ion-spinner *ngIf="disableInteractiveButton"></ion-spinner>
+            </ion-button>
+          </ng-container>
         </ng-container>
       </ion-col>
     </ion-row>
